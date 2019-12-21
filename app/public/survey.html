@@ -145,21 +145,93 @@
                     <option value="5">5</option>
                 </select>
             </div>
-            <div class="text-center">
-                <button id="submitBtn" type="submit" class="btn btn-primary btn-lg btn-block">Submit <span
-                        class="fa fa-check-circle"></span></button>
-            </div>
         </form>
+        <div class="text-center">
+            <button id="submitBtn" type="submit" class="btn btn-primary btn-lg btn-block">Submit <span
+                    class="fa fa-check-circle"></span></button>
+        </div>
+
+
+        <div id="superHeroModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title">Your New Best Friend</h1>
+                    </div>
+                    <div class="modal-body">
+                        <h2 id="superHero"></h2>
+                        <img id="superHeroPhoto" src="#">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-
 
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src=''></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#submitBtn").on("click", function (e) {
+                e.preventDefault()
+                console.log('success');
 
+                // check name/photo submission 
+                var valid = true;
+
+                if ($("#name").val() === "" || $("#photo").val() === "") {
+                    valid = false;
+                } else if ($("#question1").val() === "empty" || $("#question2").val() === "empty" || $(
+                        "#question3")
+                    .val() === "empty" || $("#question4").val() === "empty" || $("#question5").val() ===
+                    "empty" || $(
+                        "#question6").val() === "empty" || $("#question7").val() === "empty" || $(
+                        "#question8")
+                    .val() === "empty" || $("#question9").val() === "empty" || $("#question10")
+                    .val() ===
+                    "empty") {
+                    valid = false;
+                }
+
+                if (valid === true) {
+                    var newUser = {
+                        name: $("#name").val().trim(),
+                        photo: $("#photo").val().trim(),
+                        scores: [
+                            $("#question1").val(),
+                            $("#question2").val(),
+                            $("#question3").val(),
+                            $("#question4").val(),
+                            $("#question5").val(),
+                            $("#question6").val(),
+                            $("#question7").val(),
+                            $("#question8").val(),
+                            $("#question9").val(),
+                            $("#question10").val()
+                        ]
+                    };
+
+                    var currentURL = "http://localhost:8000/survey.html"
+
+                    // Ajax call for receiving response after POST req
+                    $.post(currentURL + "/api", newUser, function (data) {
+                        $("#superHero").text(data.name);
+                        $("#superHeroPhoto").attr("src", data.photo);
+                        $("#superHeroModal").modal("toggle");
+                    });
+                } else {
+                    // If a required field is missing, show alert
+                    alert("Survey is incomplete!");
+                }
+            });
+        })
+    </script>
 </body>
 
 </html>

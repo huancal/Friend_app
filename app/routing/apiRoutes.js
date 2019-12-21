@@ -4,41 +4,38 @@ const router = express.Router();
 let friends = require('../data/friend');
 
 router.get('/', (req, res) => {
-    res.send(friends);
+    res.json(friends);
 });
 
 router.post('/', (req, res) => {
-    // new submit
 
-    var newSubmission = req.body;
-
-    var bestMatch = {};
-
-    var minDifference = 100;
-
-
+    var newSubmission = req.body.scores;
+    var scoresArr = [];
+    var bestMatch = 0;
 
     for (var i = 0; i < friends.length; i++) {
 
         var totalDifference = 0;
 
-        var currentFriend = friends[i];
 
-
-        for (var j = 0; j < currentFriend.scores.length; i++) {
-            totalDifference += Math.abs(parseInt(newSubmission.scores[j]) - parseInt(currentFriend.scores[j]));
+        for (var j = 0; j < newSubmission.length; i++) {
+            totalDifference += (Math.abs(parseInt(friends[i].scores[j]) - parseInt(newSubmission[j])));
 
         };
 
-        if (totalDifference <= minDifference) {
-            bestMatch = currentFriend;
-            minDifference = totalDifference;
-        };
+        scoresArr.push(totalDifference);
     }
 
-    friends.push(newSubmission);
+    for (var i = 0; i < scoresArr.length; i++) {
+        if (scoresArr[i] <= scoresArr[bestMatch]) {
+            bestMatch = i;
+        }
+    }
 
-    res.json(bestMatch);
+    var totalMatch = friends[bestMatch];
+    res.json(totalMatch);
+
+    friends.push(req.body);
 
 });
 
